@@ -35,7 +35,7 @@ done
 
 # detect default gateway interface
 echo "Found next network interfaces:"
-ifconfig -a | sed 's/[: \t].*//;/^\(lo\|\)$/d'
+ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d'
 echo
 GATE=$(route | grep '^default' | grep -o '[^ ]*$')
 read -p "Enter your external network interface: " -i $GATE -e GATE
@@ -81,6 +81,10 @@ eval iptables -A OUTPUT -p tcp -m tcp --sport 1723 -j ACCEPT $COMMENT
 # GRE
 eval iptables -A INPUT -p gre -j ACCEPT $COMMENT
 eval iptables -A OUTPUT -p gre -j ACCEPT $COMMENT
+
+# remove standart REJECT rules
+iptables -D INPUT -j REJECT --reject-with icmp-host-prohibited
+iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited
 
 iptables-save | awk '($0 !~ /^-A/)||!($0 in a) {a[$0];print}' > $IPTABLES
 iptables -F
