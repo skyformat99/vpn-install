@@ -3,13 +3,6 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/env.sh
 
-if [ "$PLATFORM" == "$CENTOSPLATFORM" ]; then
-	systemctl enable iptables
-	systemctl stop firewalld
-	systemctl disable firewalld
-	systemctl start iptables
-fi
-
 COMMENT=" -m comment --comment \"PPTP\""
 
 if [[ ! -e $IPTABLES ]]; then
